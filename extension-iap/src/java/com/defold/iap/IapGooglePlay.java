@@ -51,6 +51,7 @@ public class IapGooglePlay implements PurchasesUpdatedListener {
     private IPurchaseListener purchaseListener;
     private boolean autoFinishTransactions;
     private Activity activity;
+    private String accountId;
 
     public IapGooglePlay(Activity activity, boolean autoFinishTransactions) {
         this.activity = activity;
@@ -257,6 +258,11 @@ public class IapGooglePlay implements PurchasesUpdatedListener {
         invokeOnPurchaseResultListener(purchaseListener, billingResultToDefoldResponse(billingResult), "");
     }
 
+    public void setAccountId(String accountId) {
+        Log.d(TAG, "setAccountId() " + accountId);
+        this.accountId = accountId;
+    }
+
     /**
      * This method is called either explicitly from Lua or from extension code
      * when "set_listener()" is called from Lua.
@@ -405,7 +411,11 @@ public class IapGooglePlay implements PurchasesUpdatedListener {
             productDetailsParams.add(ProductDetailsParams.newBuilder().setProductDetails(pd).build());
         }
 
-        final BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParams).build();
+        final BillingFlowParams.Builder billingFlowBuilder = BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParams);
+        if (this.accountId != null) {
+            billingFlowBuilder.setObfuscatedAccountId(this.accountId);
+        }
+        final BillingFlowParams billingFlowParams = billingFlowBuilder.build();
 
         BillingResult billingResult = billingClient.launchBillingFlow(this.activity, billingFlowParams);
         if (billingResult.getResponseCode() != BillingResponseCode.OK) {

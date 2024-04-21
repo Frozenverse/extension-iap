@@ -38,6 +38,21 @@ struct IAP
 
 static IAP g_IAP;
 
+static int IAP_SetAccountId(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+
+    const char* account_id = luaL_checkstring(L, 1);
+
+    dmAndroid::ThreadAttacher threadAttacher;
+    JNIEnv* env = threadAttacher.GetEnv();
+    jstring account_id_utf = env->NewStringUTF(account_id);
+    env->CallVoidMethod(g_IAP.m_IAP, g_IAP.m_SetAccountId, account_id_utf);
+    env->DeleteLocalRef(account_id_utf);
+
+    return 0;
+}
+
 static int IAP_ProcessPendingTransactions(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
@@ -236,6 +251,7 @@ static const luaL_reg IAP_methods[] =
     {"set_listener", IAP_SetListener},
     {"get_provider_id", IAP_GetProviderId},
     {"process_pending_transactions", IAP_ProcessPendingTransactions},
+    {"set_account_id", IAP_SetAccountId},
     {0, 0}
 };
 

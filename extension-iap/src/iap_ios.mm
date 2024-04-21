@@ -31,6 +31,7 @@ struct IAP
     IAPCommandQueue                 m_CommandQueue;
     IAPCommandQueue                 m_ObservableQueue;
     SKPaymentTransactionObserver*   m_Observer;
+    char *                          m_AccountId;
 };
 
 IAP g_IAP;
@@ -383,6 +384,19 @@ static void processTransactions(IAP* iap, NSArray* transactions) {
     }
 }
 
+static int IAP_SetAccountId(lua_State* L)
+{
+    int top = lua_gettop(L);
+
+    const char *account_id = luaL_checkstring(L, 1);
+    if (g_IAP.m_AccountId) {
+        free(g_IAP.m_AccountId);
+    }
+
+    g_IAP.m_AccountId = strdup(account_id);
+    return 0;
+}
+
 static int IAP_ProcessPendingTransactions(lua_State* L)
 {
     processTransactions(&g_IAP, [SKPaymentQueue defaultQueue].transactions);
@@ -431,6 +445,9 @@ static int IAP_Buy(lua_State* L)
     SKMutablePayment* payment = [[SKMutablePayment alloc] init];
     payment.productIdentifier = [NSString stringWithUTF8String: id];
     payment.quantity = 1;
+    if (g_IAP.m_AccountId) {
+        payment.applicationUsername = [NSString stringWithUTF8String: g_IAP.m_AccountId];
+    }
 
     [[SKPaymentQueue defaultQueue] addPayment:payment];
     [payment release];
@@ -531,6 +548,7 @@ static const luaL_reg IAP_methods[] =
     {"set_listener", IAP_SetListener},
     {"get_provider_id", IAP_GetProviderId},
     {"process_pending_transactions", IAP_ProcessPendingTransactions},
+    {"set_account_id", IAP_SetAccountId},
     {0, 0}
 };
 

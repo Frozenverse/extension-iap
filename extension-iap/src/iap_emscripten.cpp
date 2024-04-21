@@ -62,6 +62,12 @@ static void IAPList_Callback(void* luacallback, const char* result_json)
     dmScript::TeardownCallback(callback);
 }
 
+static int IAP_SetAccountId(lua_State* L)
+{
+    dmLogError("iap.set_account_id is not supported on this platform.");
+    return 0;
+}
+
 static int IAP_ProcessPendingTransactions(lua_State* L)
 {
     return 0;
