@@ -311,6 +311,15 @@
 
 #*****************************************************************************************************
 
+  - name: set_account_id
+    desc: Sets a account identifier which associates purchases made by users on your app. Currently only supported for Google Play and StoreKit.
+    parameters:
+    - name: account_id
+      type: string
+      desc: a string that associates the purchase with a user on your app.
+
+#*****************************************************************************************************
+
   - name: PROVIDER_ID_AMAZON
     type: number
     desc: provider id for Amazon
