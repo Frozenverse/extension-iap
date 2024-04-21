@@ -32,6 +32,7 @@ struct IAP
     jmethodID       m_ProcessPendingConsumables;
     jmethodID       m_AcknowledgeTransaction;
     jmethodID       m_FinishTransaction;
+    jmethodID       m_SetAccountId;
 
     IAPCommandQueue m_CommandQueue;
 };
