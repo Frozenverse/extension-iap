@@ -1,4 +1,4 @@
-#if defined(DM_PLATFORM_ANDROID)
+// #if defined(DM_PLATFORM_ANDROID)
 
 #include <dmsdk/sdk.h>
 #include <dmsdk/dlib/android.h>
@@ -414,6 +414,7 @@ static dmExtension::Result InitializeIAP(dmExtension::Params* params)
     g_IAP.m_ProcessPendingConsumables = env->GetMethodID(iap_class, "processPendingConsumables", "(Lcom/defold/iap/IPurchaseListener;)V");
     g_IAP.m_FinishTransaction = env->GetMethodID(iap_class, "finishTransaction", "(Ljava/lang/String;Lcom/defold/iap/IPurchaseListener;)V");
     g_IAP.m_AcknowledgeTransaction = env->GetMethodID(iap_class, "acknowledgeTransaction", "(Ljava/lang/String;Lcom/defold/iap/IPurchaseListener;)V");
+    g_IAP.m_SetAccountId = env->GetMethodID(iap_class, "setAccountId", "(Ljava/lang/String;)V");
 
     jmethodID jni_constructor = env->GetMethodID(iap_class, "<init>", "(Landroid/app/Activity;Z)V");
     g_IAP.m_IAP = env->NewGlobalRef(env->NewObject(iap_class, jni_constructor, threadAttacher.GetActivity()->clazz, g_IAP.m_autoFinishTransactions));
